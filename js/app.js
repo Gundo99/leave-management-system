@@ -1,1 +1,6 @@
-console.log("app.js loaded");
+initializeStorage();
+
+console.log(getEmployees());
+console.log(getAdmin());
+console.log(getLeaveBalances());
+console.log(getLeaveRequests());
