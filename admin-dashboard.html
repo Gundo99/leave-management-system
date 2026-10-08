@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+    <h1>Admin Dashboard</h1>
+    <p>Welcome to the admin dashboard.</p>
+
+    <script src="js/storage.js"></script>
+
+    <script>
+        const currentUser = getCurrentUser();
+
+        if (!currentUser || currentUser.role !== "admin") {
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>

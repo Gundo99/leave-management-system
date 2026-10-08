@@ -31,3 +31,11 @@ function getLeaveBalances() {
 function getLeaveRequests() {
     return JSON.parse(localStorage.getItem("leaveRequests"));
 }
+
+function setCurrentUser(user) {
+    localStorage.setItem("currentUser", JSON.stringify(user));
+}
+
+function getCurrentUser() {
+    return JSON.parse(localStorage.getItem("currentUser"));
+}
