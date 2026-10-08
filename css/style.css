@@ -1,31 +1,54 @@
-body {
-    font-family: Arial, sans-serif;
+.dashboard-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
 }
 
-.login-container {
-    width: 300px;
-    margin: 100px auto;
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.login-container h1,
-.login-container h2 {
+.dashboard-header h1 {
+    margin-bottom: 5px;
+}
+
+.dashboard-header p {
+    margin-top: 0;
+}
+
+.employee-information,
+.leave-balances,
+.dashboard-actions {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+.balance-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.balance-card {
+    padding: 15px;
+    border: 1px solid #ddd;
     text-align: center;
 }
 
-.login-container label {
-    display: block;
-    margin-top: 15px;
+.balance-card h3 {
+    margin-top: 0;
 }
 
-.login-container input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    box-sizing: border-box;
+.balance-card p {
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.login-container button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
+.dashboard-actions button {
+    padding: 10px 15px;
+    margin-right: 10px;
 }

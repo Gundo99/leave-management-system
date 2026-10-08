@@ -10,6 +10,8 @@
     <h1>Admin Dashboard</h1>
     <p>Welcome to the admin dashboard.</p>
 
+    <button id="logoutButton">Logout</button>
+
     <script src="js/storage.js"></script>
 
     <script>
@@ -19,6 +21,15 @@
             window.location.href = "index.html";
         }
     </script>
+
+    <script>
+    const logoutButton = document.getElementById("logoutButton");
+
+    logoutButton.addEventListener("click", function () {
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+    });
+</script>
 
 </body>
 </html>

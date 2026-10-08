@@ -4,11 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <h1>Employee Dashboard</h1>
-    <p>Welcome to the employee dashboard.</p>
+    <div class="dashboard-container">
+
+        <header class="dashboard-header">
+            <div>
+                <h1>Employee Dashboard</h1>
+                <p id="welcomeMessage"></p>
+            </div>
+
+            <button id="logoutButton">Logout</button>
+        </header>
+
+        <section class="employee-information">
+            <h2>My Information</h2>
+
+            <div id="employeeInfo"></div>
+        </section>
+
+        <section class="leave-balances">
+            <h2>Leave Balances</h2>
+
+            <div id="leaveBalances"></div>
+        </section>
+
+        <section class="dashboard-actions">
+            <h2>Leave</h2>
+
+            <button id="requestLeaveButton">Request Leave</button>
+            <button id="leaveHistoryButton">Leave History</button>
+        </section>
+
+    </div>
 
     <script src="js/storage.js"></script>
 
@@ -18,6 +50,94 @@
         if (!currentUser || currentUser.role !== "employee") {
             window.location.href = "index.html";
         }
+
+        const welcomeMessage = document.getElementById("welcomeMessage");
+        const employeeInfo = document.getElementById("employeeInfo");
+        const leaveBalances = document.getElementById("leaveBalances");
+
+        welcomeMessage.textContent =
+            `Welcome, ${currentUser.firstName} ${currentUser.surname}`;
+
+        employeeInfo.innerHTML = `
+            <p><strong>Employee ID:</strong> ${currentUser.employeeId}</p>
+            <p><strong>Name:</strong> ${currentUser.firstName} ${currentUser.surname}</p>
+            <p><strong>Username:</strong> ${currentUser.username}</p>
+            <p><strong>Employment Start Date:</strong> ${currentUser.employmentStartDate}</p>
+        `;
+
+        const balances = getLeaveBalances();
+
+        const employeeBalance = balances.find(function (balance) {
+            return balance.employeeId === currentUser.employeeId;
+        });
+
+        leaveBalances.innerHTML = `
+            <div class="balance-grid">
+
+                <div class="balance-card">
+                    <h3>Annual Leave</h3>
+                    <p>${employeeBalance.annual} days</p>
+                </div>
+
+                <div class="balance-card">
+                    <h3>Sick Leave</h3>
+                    <p>${employeeBalance.sick} days</p>
+                </div>
+
+                <div class="balance-card">
+                    <h3>Maternity Leave</h3>
+                    <p>${employeeBalance.maternity} days</p>
+                </div>
+
+                <div class="balance-card">
+                    <h3>Parental Leave</h3>
+                    <p>${employeeBalance.parental} days</p>
+                </div>
+
+                <div class="balance-card">
+                    <h3>Family Responsibility</h3>
+                    <p>${employeeBalance.familyResponsibility} days</p>
+                </div>
+
+                <div class="balance-card">
+                    <h3>Study Leave</h3>
+                    <p>${employeeBalance.study} days</p>
+                </div>
+
+                <div class="balance-card">
+                    <h3>Birthday Leave</h3>
+                    <p>${employeeBalance.birthday} day</p>
+                </div>
+
+                <div class="balance-card">
+                    <h3>Unpaid Leave</h3>
+                    <p>${employeeBalance.unpaid} days</p>
+                </div>
+
+            </div>
+        `;
+
+        const logoutButton = document.getElementById("logoutButton");
+
+        logoutButton.addEventListener("click", function () {
+            localStorage.removeItem("currentUser");
+            window.location.href = "index.html";
+        });
+
+        const requestLeaveButton =
+            document.getElementById("requestLeaveButton");
+
+        requestLeaveButton.addEventListener("click", function () {
+            window.location.href = "request-leave.html";
+        });
+
+        const leaveHistoryButton =
+            document.getElementById("leaveHistoryButton");
+
+        leaveHistoryButton.addEventListener("click", function () {
+            window.location.href = "leave-history.html";
+        });
     </script>
+
 </body>
 </html>
