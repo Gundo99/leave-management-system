@@ -21,7 +21,7 @@ const admin = {
 const leaveBalances = [
     {
         employeeId: "NDO001",
-        annual: 0,
+        annual: 20,
         sick: 5,
         maternity: 120,
         parental: 10,
