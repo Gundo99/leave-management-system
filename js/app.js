@@ -134,8 +134,37 @@ if (leaveForm) {
                 return balance.employeeId === currentUser.employeeId;
             });
 
+            if (!employeeBalance) {
+                message.textContent = "Your leave balances could not be found.";
+                return;
+            }
+
             const leaveRequests = getLeaveRequests();
 
+            // Check eligibility for this leave type.
+            const eligibilityMessage =
+                validateLeaveEligibility(leaveType, currentUser);
+
+            if (eligibilityMessage) {
+                message.textContent = eligibilityMessage;
+                return;
+            }
+
+            // Prevent overlapping pending or approved requests.
+            if (
+                hasOverlappingLeave(
+                    currentUser.employeeId,
+                    startDate,
+                    endDate,
+                    leaveRequests
+                )
+            ) {
+                message.textContent =
+                    "These dates overlap with an existing pending or approved leave request.";
+                return;
+            }
+
+            // Calculate the days already requested but not yet approved.
             const pendingDays = leaveRequests
                 .filter(function (request) {
                     return request.employeeId === currentUser.employeeId &&
@@ -149,13 +178,18 @@ if (leaveForm) {
             const availableBalance =
                 employeeBalance[leaveType] - pendingDays;
 
-            if (leaveType !== "unpaid" && workingDays > availableBalance) {
+            // Unpaid leave has no fixed balance limit.
+            if (
+                leaveType !== "unpaid" &&
+                workingDays > availableBalance
+            ) {
                 message.textContent =
                     `You do not have enough ${getLeaveTypeName(leaveType)} available. ` +
                     `Available balance: ${availableBalance} days.`;
 
                 return;
             }
+
             calculatedLeave = {
                 leaveType: leaveType,
                 startDate: startDate,
@@ -339,3 +373,90 @@ async function calculateWorkingDays(startDate, endDate) {
     return workingDays;
 }
 
+function getCompletedMonths(startDate) {
+    const start = new Date(startDate);
+    const today = new Date();
+
+    let months =
+        (today.getFullYear() - start.getFullYear()) * 12 +
+        today.getMonth() - start.getMonth();
+
+    if (today.getDate() < start.getDate()) {
+        months--;
+    }
+
+    return months;
+}
+
+
+function validateLeaveEligibility(leaveType, employee) {
+    const completedMonths =
+        getCompletedMonths(employee.employmentStartDate);
+
+    if (leaveType === "sick" && completedMonths < 3) {
+        return "You must complete 3 months of employment to qualify for sick leave.";
+    }
+
+    if (leaveType === "maternity") {
+        if (employee.gender !== "female") {
+            return "Maternity leave is only available to female employees.";
+        }
+
+        if (completedMonths < 12) {
+            return "You must complete 12 months of employment to qualify for paid maternity leave.";
+        }
+    }
+
+    if (leaveType === "birthday") {
+        const birthMonth =
+            new Date(employee.dateOfBirth).getMonth();
+
+        const startMonth =
+            new Date(document.getElementById("startDate").value)
+                .getMonth();
+
+        const endMonth =
+            new Date(document.getElementById("endDate").value)
+                .getMonth();
+
+        const startYear =
+            new Date(document.getElementById("startDate").value)
+                .getFullYear();
+
+        const endYear =
+            new Date(document.getElementById("endDate").value)
+                .getFullYear();
+
+        if (
+            startMonth !== birthMonth ||
+            endMonth !== birthMonth ||
+            startYear !== endYear
+        ) {
+            return "Birthday leave must be taken within your birthday month.";
+        }
+    }
+
+    return "";
+}
+
+
+function hasOverlappingLeave(
+    employeeId,
+    startDate,
+    endDate,
+    leaveRequests
+) {
+    return leaveRequests.some(function (request) {
+        const isActiveRequest =
+            request.status === "Pending" ||
+            request.status === "Approved";
+
+        const overlaps =
+            startDate <= request.endDate &&
+            endDate >= request.startDate;
+
+        return request.employeeId === employeeId &&
+            isActiveRequest &&
+            overlaps;
+    });
+}
