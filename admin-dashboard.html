@@ -3,33 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | Leave Management System</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="admin-page">
+    <div class="dashboard-container admin-container">
+        <header class="dashboard-header admin-header">
+            <div>
+                <p class="eyebrow">LEAVE MANAGEMENT SYSTEM</p>
+                <h1>Admin Dashboard</h1>
+                <p class="muted">Review employee leave requests and manage leave balances.</p>
+            </div>
+            <button type="button" id="logoutButton" class="button-secondary">Log out</button>
+        </header>
 
-    <h1>Admin Dashboard</h1>
-    <p>Welcome to the admin dashboard.</p>
+        <div id="adminMessage" class="notice" role="status" aria-live="polite"></div>
 
-    <button id="logoutButton">Logout</button>
+        <section class="admin-stats" aria-label="Request summary">
+            <article class="stat-card">
+                <span class="stat-label">Pending requests</span>
+                <strong id="pendingCount">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Approved</span>
+                <strong id="approvedCount">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Rejected</span>
+                <strong id="rejectedCount">0</strong>
+            </article>
+            <article class="stat-card">
+                <span class="stat-label">Employees</span>
+                <strong id="employeeCount">0</strong>
+            </article>
+        </section>
 
+        <section class="admin-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Leave requests</h2>
+                    <p class="muted">Select a request to review its details and make a decision.</p>
+                </div>
+                <div class="filter-control">
+                    <label for="statusFilter">Show</label>
+                    <select id="statusFilter">
+                        <option value="Pending">Pending requests</option>
+                        <option value="All">All requests</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            <div id="requestList" class="request-list"></div>
+        </section>
+
+        <section class="admin-panel" id="requestDetailsPanel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Request details</h2>
+                    <p class="muted">Choose a request above to see its full details.</p>
+                </div>
+            </div>
+            <div id="requestDetails" class="empty-state">No request selected.</div>
+        </section>
+
+        <section class="admin-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Employee overview</h2>
+                    <p class="muted">Current balances and request totals for each employee.</p>
+                </div>
+            </div>
+            <div id="employeeOverview" class="table-scroll"></div>
+        </section>
+    </div>
+
+    <script src="js/data.js"></script>
     <script src="js/storage.js"></script>
-
-    <script>
-        const currentUser = getCurrentUser();
-
-        if (!currentUser || currentUser.role !== "admin") {
-            window.location.href = "index.html";
-        }
-    </script>
-
-    <script>
-    const logoutButton = document.getElementById("logoutButton");
-
-    logoutButton.addEventListener("click", function () {
-        localStorage.removeItem("currentUser");
-        window.location.href = "index.html";
-    });
-</script>
-
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
 </body>
 </html>

@@ -356,6 +356,11 @@ function validateLeaveRequest(leaveType, employee, startDate, endDate, workingDa
         return { valid: false, message: "Maternity leave cannot exceed 120 working days." };
     }
 
+    if (leaveType === "sick" && completedMonths < 3) {
+        // Before 3 months, the employee can use the initial 5-day entitlement.
+        // The balance check below enforces that limit.
+    }
+
     return { valid: true, message: "" };
 }
 
