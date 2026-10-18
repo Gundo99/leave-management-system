@@ -4,10 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leave History</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div>
+                <h1>My Leave History</h1>
+                <p>View your submitted leave requests and their status.</p>
+            </div>
+            <button type="button" id="backButton">Back to Dashboard</button>
+        </header>
+        <p id="historyMessage" role="status"></p>
+        <div id="leaveHistory"></div>
+    </div>
 
-    <h1>Leave History</h1>
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const historyUser = getCurrentUser();
+        if (!historyUser || historyUser.role !== "employee") {
+            window.location.href = "index.html";
+        } else {
+            syncEmployeeEntitlements(historyUser);
+            renderLeaveHistory();
+        }
 
+        function renderLeaveHistory() {
+            const container = document.getElementById("leaveHistory");
+            const requests = getLeaveRequests()
+                .filter(function (request) { return request.employeeId === historyUser.employeeId; })
+                .sort(function (a, b) { return new Date(b.submittedDate) - new Date(a.submittedDate); });
+
+            if (requests.length === 0) {
+                container.innerHTML = '<section class="employee-information"><p>You have not submitted any leave requests yet.</p></section>';
+                return;
+            }
+
+            container.innerHTML = requests.map(function (request) {
+                const rejection = request.rejectionReason
+                    ? `<p><strong>Rejection reason:</strong> ${escapeHtml(request.rejectionReason)}</p>` : "";
+                const documentText = request.supportingDocument
+                    ? `<p><strong>Supporting document:</strong> ${escapeHtml(request.supportingDocument)}</p>` : "";
+                const payText = request.leaveType === "maternity"
+                    ? `<p><strong>Remuneration:</strong> ${request.maternityPayRate === 75 ? "75%" : "Unpaid"}</p>`
+                    : (request.leaveType === "parental" ? `<p><strong>Remuneration:</strong> 75%</p>` : "");
+                const cancelButton = request.status === "Pending"
+                    ? `<button type="button" class="cancel-request" data-id="${escapeHtml(request.requestId)}">Cancel Request</button>` : "";
+
+                return `<section class="employee-information">
+                    <h2>${escapeHtml(getLeaveTypeName(request.leaveType))}</h2>
+                    <p><strong>Request ID:</strong> ${escapeHtml(request.requestId)}</p>
+                    <p><strong>Dates:</strong> ${escapeHtml(request.startDate)} to ${escapeHtml(request.endDate)}</p>
+                    <p><strong>Working days:</strong> ${escapeHtml(request.workingDays)}</p>
+                    <p><strong>Reason:</strong> ${escapeHtml(request.reason)}</p>
+                    <p><strong>Status:</strong> <span class="status status-${escapeHtml(request.status.toLowerCase())}">${escapeHtml(request.status)}</span></p>
+                    <p><strong>Submitted:</strong> ${escapeHtml(new Date(request.submittedDate).toLocaleString())}</p>
+                    ${payText}${documentText}${rejection}${cancelButton}
+                </section>`;
+            }).join("");
+
+            container.querySelectorAll(".cancel-request").forEach(function (button) {
+                button.addEventListener("click", function () { cancelPendingRequest(button.dataset.id); });
+            });
+        }
+
+        function cancelPendingRequest(requestId) {
+            const requests = getLeaveRequests();
+            const request = requests.find(function (item) {
+                return item.requestId === requestId && item.employeeId === historyUser.employeeId;
+            });
+            const historyMessage = document.getElementById("historyMessage");
+
+            if (!request || request.status !== "Pending") {
+                historyMessage.textContent = "Only pending requests can be cancelled.";
+                return;
+            }
+            if (!confirm("Are you sure you want to cancel this leave request?")) return;
+
+            request.status = "Cancelled";
+            request.cancelledDate = new Date().toISOString();
+            localStorage.setItem("leaveRequests", JSON.stringify(requests));
+            historyMessage.textContent = "Your leave request has been cancelled.";
+            renderLeaveHistory();
+        }
+
+        document.getElementById("backButton").addEventListener("click", function () {
+            window.location.href = "employee-dashboard.html";
+        });
+    </script>
 </body>
 </html>
