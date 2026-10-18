@@ -1,3 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: #222;
+    background: #f7f8fa;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    padding: 10px 15px;
+    border: 0;
+    border-radius: 4px;
+    background: #174ea6;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #123d82;
+}
+
+input, select, textarea {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 600px;
+    padding: 9px;
+    margin-top: 6px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+}
+
+label {
+    display: block;
+    margin-top: 16px;
+    font-weight: bold;
+}
+
+.login-container {
+    width: 90%;
+    max-width: 360px;
+    margin: 80px auto;
+    padding: 24px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.login-container h1, .login-container h2 {
+    text-align: center;
+}
+
+.login-container button {
+    width: 100%;
+    margin-top: 20px;
+}
+
 .dashboard-container {
     width: 90%;
     max-width: 1000px;
@@ -8,47 +67,51 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     margin-bottom: 30px;
 }
 
-.dashboard-header h1 {
-    margin-bottom: 5px;
-}
+.dashboard-header h1 { margin-bottom: 5px; }
+.dashboard-header p { margin-top: 0; }
 
-.dashboard-header p {
-    margin-top: 0;
-}
-
-.employee-information,
-.leave-balances,
-.dashboard-actions {
-    margin-bottom: 30px;
+.employee-information, .leave-balances, .dashboard-actions {
+    margin-bottom: 24px;
     padding: 20px;
     border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
 }
 
 .balance-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 15px;
 }
 
 .balance-card {
     padding: 15px;
     border: 1px solid #ddd;
+    border-radius: 5px;
     text-align: center;
+    background: white;
 }
 
-.balance-card h3 {
-    margin-top: 0;
+.balance-card h3 { margin-top: 0; }
+.balance-card p { font-size: 20px; font-weight: bold; }
+.dashboard-actions button { margin: 0 10px 8px 0; }
+#message, #historyMessage, #loginMessage { color: #a12622; }
+.status { font-weight: bold; }
+.status-pending { color: #8a5b00; }
+.status-approved { color: #176b36; }
+.status-rejected, .status-cancelled { color: #a12622; }
+.cancel-request { background: #a12622; }
+.cancel-request:hover { background: #7f1d1d; }
+
+@media (max-width: 700px) {
+    .balance-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dashboard-header { align-items: flex-start; }
 }
 
-.balance-card p {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.dashboard-actions button {
-    padding: 10px 15px;
-    margin-right: 10px;
+@media (max-width: 420px) {
+    .balance-grid { grid-template-columns: 1fr; }
 }

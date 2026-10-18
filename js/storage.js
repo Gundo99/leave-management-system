@@ -17,19 +17,19 @@ function initializeStorage() {
 }
 
 function getEmployees() {
-    return JSON.parse(localStorage.getItem("employees"));
+    return JSON.parse(localStorage.getItem("employees") || "[]");
 }
 
 function getAdmin() {
-    return JSON.parse(localStorage.getItem("admin"));
+    return JSON.parse(localStorage.getItem("admin") || "null");
 }
 
 function getLeaveBalances() {
-    return JSON.parse(localStorage.getItem("leaveBalances"));
+    return JSON.parse(localStorage.getItem("leaveBalances") || "[]");
 }
 
 function getLeaveRequests() {
-    return JSON.parse(localStorage.getItem("leaveRequests"));
+    return JSON.parse(localStorage.getItem("leaveRequests") || "[]");
 }
 
 function setCurrentUser(user) {
@@ -37,5 +37,5 @@ function setCurrentUser(user) {
 }
 
 function getCurrentUser() {
-    return JSON.parse(localStorage.getItem("currentUser"));
+    return JSON.parse(localStorage.getItem("currentUser") || "null");
 }
