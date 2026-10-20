@@ -495,3 +495,21 @@ label {
         max-width: none;
     }
 }
+
+/* Make request cards clearly interactive and keyboard accessible. */
+.request-item {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.request-item:focus-visible {
+    outline: 3px solid #174ea6;
+    outline-offset: 2px;
+}
+
+.request-item:active {
+    transform: translateY(1px);
+}

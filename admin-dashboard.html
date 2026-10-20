@@ -58,11 +58,15 @@
             <div id="requestList" class="request-list"></div>
         </section>
 
-        if (!currentUser || currentUser.role !== "admin") {
-            window.location.href = "index.html";
-        }
-        
-    </script>
+        <section class="admin-panel" id="requestDetailsPanel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Request details</h2>
+                    <p class="muted">Choose a request above to see its full details.</p>
+                </div>
+            </div>
+            <div id="requestDetails" class="empty-state">No request selected.</div>
+        </section>
 
         <section class="admin-panel">
             <div class="panel-heading">

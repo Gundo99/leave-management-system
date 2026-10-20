@@ -23,6 +23,37 @@
         renderRequestList();
     });
 
+    // Use one delegated click handler so request selection keeps working
+    // whenever the list is re-rendered after filtering or a decision.
+    requestList.addEventListener("click", function (event) {
+        const button = event.target.closest("[data-request-id]");
+        if (!button || !requestList.contains(button)) return;
+
+        selectedRequestId = button.dataset.requestId;
+        clearMessage();
+
+        try {
+            const request = getLeaveRequests().find(function (item) {
+                return String(item.requestId) === String(selectedRequestId);
+            });
+
+            renderRequestList();
+            if (!request) {
+                showMessage("This request could not be found. Refresh the page and try again.", "error");
+                return;
+            }
+
+            renderRequestDetails(request);
+            document.getElementById("requestDetailsPanel").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        } catch (error) {
+            console.error("Unable to open leave request details:", error);
+            showMessage("The request details could not be opened. Check the browser console for details.", "error");
+        }
+    });
+
     renderDashboard();
 
     function renderDashboard() {
@@ -80,17 +111,6 @@
             '</button>';
         }).join("");
 
-        requestList.querySelectorAll("[data-request-id]").forEach(function (button) {
-            button.addEventListener("click", function () {
-                selectedRequestId = button.dataset.requestId;
-                clearMessage();
-                renderRequestList();
-                const request = getLeaveRequests().find(function (item) {
-                    return item.requestId === selectedRequestId;
-                });
-                if (request) renderRequestDetails(request);
-            });
-        });
     }
 
     function renderRequestDetails(request) {
